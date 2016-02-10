@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +26,14 @@ import com.google.common.collect.ImmutableMap.Builder;
 
 /**
  * A utility class which allows for testing entity and transfer object classes. This is mainly for code coverage since
- * these types of objects are normally nothing more than setters and settings. If any logic exists in the method, then
- * the get method should be sent in to be ignored and a custom test function should be written.
+ * these types of objects are normally nothing more than getters and setters. If any logic exists in the method, then
+ * the get method name should be sent in as an ignored field and a custom test function should be written.
  *
  * @param <T> The object type to test.
  */
 public abstract class DtoTest<T> {
 
+    /** A map of default mappers for common objects. */
     private static final ImmutableMap<Class<?>, Supplier<?>> DEFAULT_MAPPERS;
 
     static {
@@ -57,6 +59,7 @@ public abstract class DtoTest<T> {
         mapperBuilder.put(Character.class, () -> Character.valueOf((char) 0));
 
         mapperBuilder.put(BigDecimal.class, () -> BigDecimal.ONE);
+        mapperBuilder.put(Date.class, () -> new Date());
 
         /* Collection Types. */
         mapperBuilder.put(Set.class, () -> Collections.emptySet());
@@ -77,16 +80,16 @@ public abstract class DtoTest<T> {
     private final ImmutableMap<Class<?>, Supplier<?>> mappers;
 
     /**
-     * Creates an instance of {@link TransferObjectTest} with the default ignore fields.
+     * Creates an instance of {@link DtoTest} with the default ignore fields.
      */
     protected DtoTest() {
         this(null, null);
     }
 
     /**
-     * Creates an instance of {@link TransferObjectTest} with the default ignore fields.
+     * Creates an instance of {@link DtoTest} with the default ignore fields.
      *
-     * @param capitalizedVariables If the variables in the test class start with a capital letter.
+     * @param customMappers Any custom mappers for a given class type.
      * @param ignoreFields The getters which should be ignored (e.g., "getId" or "isActive").
      */
     protected DtoTest(Map<Class<?>, Supplier<?>> customMappers, Set<String> ignoreFields) {
@@ -112,19 +115,23 @@ public abstract class DtoTest<T> {
      * @param fieldName The field name (used for error messages).
      * @param getter The get {@link Method}.
      * @param instance The test instance.
-     * @param fieldType The type of the return type.
      * @param expected The expected result.
      *
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
+     * @throws IllegalAccessException if this Method object is enforcing Java language access control and the underlying
+     *             method is inaccessible.
+     * @throws IllegalArgumentException if the method is an instance method and the specified object argument is not an
+     *             instance of the class or interface declaring the underlying method (or of a subclass or implementor
+     *             thereof); if the number of actual and formal parameters differ; if an unwrapping conversion for
+     *             primitive arguments fails; or if, after possible unwrapping, a parameter value cannot be converted to
+     *             the corresponding formal parameter type by a method invocation conversion.
+     * @throws InvocationTargetException if the underlying method throws an exception.
      */
-    private void callGetter(String fieldName, Method getter, T instance, Class<?> fieldType, Object expected)
+    private void callGetter(String fieldName, Method getter, T instance, Object expected)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
         final Object getResult = getter.invoke(instance);
 
-        if (fieldType.isPrimitive()) {
+        if (getter.getReturnType().isPrimitive()) {
             /* Calling assetEquals() here due to autoboxing of primitive to object type. */
             assertEquals(fieldName + " is different", expected, getResult);
         } else {
@@ -136,6 +143,7 @@ public abstract class DtoTest<T> {
     /**
      * Creates an object for the given {@link Class}.
      *
+     * @param fieldName The name of the field.
      * @param clazz The {@link Class} type to create.
      *
      * @return A new instance for the given {@link Class}.
@@ -244,7 +252,7 @@ public abstract class DtoTest<T> {
 
                 pair.getSetter().invoke(instance, newObject);
 
-                callGetter(fieldName, pair.getGetter(), instance, pair.getGetter().getReturnType(), newObject);
+                callGetter(fieldName, pair.getGetter(), instance, newObject);
             } else if (pair.getGetter() != null) {
                 /*
                  * Object is immutable (no setter but Hibernate or something else sets it via reflection). Use
@@ -255,7 +263,7 @@ public abstract class DtoTest<T> {
                 field.setAccessible(true);
                 field.set(instance, newObject);
 
-                callGetter(fieldName, pair.getGetter(), instance, pair.getGetter().getReturnType(), newObject);
+                callGetter(fieldName, pair.getGetter(), instance, newObject);
             }
         }
     }

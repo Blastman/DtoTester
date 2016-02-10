@@ -1,5 +1,7 @@
 package com.objectpartners;
 
+import java.util.Date;
+
 /**
  * An example object with all primitives to verify code coverage.
  */
@@ -8,6 +10,7 @@ public class EverythingTransfer {
     private Boolean booleanObject;
     private Byte byteObject;
     private Character characterObject;
+    private Date dateObject;
     private Double doubleObject;
     private Float floatObject;
     private Integer intObject;
@@ -33,6 +36,10 @@ public class EverythingTransfer {
 
     public Character getCharacterObject() {
         return characterObject;
+    }
+
+    public Date getDateObject() {
+        return dateObject;
     }
 
     public Double getDoubleObject() {
@@ -101,6 +108,10 @@ public class EverythingTransfer {
 
     public void setCharacterObject(Character characterObject) {
         this.characterObject = characterObject;
+    }
+
+    public void setDateObject(Date dateObject) {
+        this.dateObject = dateObject;
     }
 
     public void setDoubleObject(Double doubleObject) {

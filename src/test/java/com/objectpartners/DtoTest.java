@@ -2,7 +2,6 @@ package com.objectpartners;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -126,31 +125,10 @@ public abstract class DtoTest<T> {
         final Object getResult = getter.invoke(instance);
 
         if (fieldType.isPrimitive()) {
-            /*
-             * Have to handle primitives explicitly. This is because this is a method and Java will perform autoboxing
-             * and convert our primitives into objects.
-             */
-            if (Integer.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Integer) expected).intValue(), getResult);
-            } else if (Double.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Double) expected).doubleValue(), getResult);
-            } else if (Float.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Float) expected).floatValue(), getResult);
-            } else if (Long.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Long) expected).longValue(), getResult);
-            } else if (Boolean.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Boolean) expected).booleanValue(), getResult);
-            } else if (Short.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Short) expected).shortValue(), getResult);
-            } else if (Byte.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Byte) expected).byteValue(), getResult);
-            } else if (Character.class.equals(expected.getClass())) {
-                assertEquals(fieldName + " is different", ((Character) expected).charValue(), getResult);
-            } else {
-                fail("Unknown primitive type: " + fieldType);
-            }
-
+            /* Calling assetEquals() here due to autoboxing of primitive to object type. */
+            assertEquals(fieldName + " is different", expected, getResult);
         } else {
+            /* This is a normal object. The object passed in should be the exactly same object we get back. */
             assertSame(fieldName + " is different", expected, getResult);
         }
     }

@@ -87,7 +87,7 @@ public abstract class DtoTest<T> {
     }
 
     /**
-     * Creates an instance of {@link DtoTest} with the default ignore fields.
+     * Creates an instance of {@link DtoTest} with ignore fields and additional custom mappers.
      *
      * @param customMappers Any custom mappers for a given class type.
      * @param ignoreFields The getters which should be ignored (e.g., "getId" or "isActive").
@@ -157,17 +157,17 @@ public abstract class DtoTest<T> {
     private Object createObject(String fieldName, Class<?> clazz)
             throws InstantiationException, IllegalAccessException {
 
-        final Supplier<?> supplier = this.mappers.get(clazz);
-        if (supplier != null) {
-            return supplier.get();
-        }
-
-        if (clazz.isEnum()) {
-            return clazz.getEnumConstants()[0];
-        }
-
-        try {
-            return clazz.newInstance();
+      try {      
+          final Supplier<?> supplier = this.mappers.get(clazz);
+          if (supplier != null) {
+              return supplier.get();
+          }
+  
+          if (clazz.isEnum()) {
+              return clazz.getEnumConstants()[0];
+          }
+          
+          return clazz.newInstance();        
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException("Unable to create objects for field '" + fieldName + "'.", e);
         }

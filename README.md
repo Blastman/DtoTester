@@ -7,9 +7,7 @@ To use it as a maven dependency, build it and install in your local maven reposi
 <dependency>
 	<groupId>com.objectpartners</groupId>
 	<artifactId>dtotester</artifactId>
-	<classifier>tests</classifier>
-	<type>test-jar</type>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<scope>test</scope>
 </dependency>
 ```
@@ -32,3 +30,4 @@ public class MyOwnDtoTest extends DtoTest<MyOwnDto> {
 ```
 
 For more information, please read the [blog post](https://objectpartners.com/2016/02/16/automatically-junit-test-dto-and-transfer-objects/)
+

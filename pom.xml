@@ -4,11 +4,11 @@
 
 	<groupId>com.objectpartners</groupId>
 	<artifactId>dtotester</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>dtotester</name>
-	<url>http://maven.apache.org</url>
+	<url>https://objectpartners.com/2016/02/16/automatically-junit-test-dto-and-transfer-objects/</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,18 +25,6 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-				  <execution>
-				    <goals>
-				      <goal>test-jar</goal>
-				    </goals>
-				  </execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 	</build>
@@ -51,7 +39,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
